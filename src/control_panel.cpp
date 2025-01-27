@@ -5556,6 +5556,8 @@ static constexpr uint32_t UPLAY_OVERLAY_PS_CRC32C  { 0x35ae281c };
   static bool has_own_limiter    = hModTBFix;
   static bool has_own_limiter_ex = hModTZFix;
 
+  int __result;
+
   if (! has_own_limiter)
   {
     ImGui::PushItemWidth (ImGui::GetWindowWidth () * 0.666f);
@@ -5564,6 +5566,21 @@ static constexpr uint32_t UPLAY_OVERLAY_PS_CRC32C  { 0x35ae281c };
                                                        ImGuiTreeNodeFlags_DefaultOpen ) )
     {
       SK_ImGui_DrawGraph_FramePacing ();
+
+  
+      if (ImGui::Checkbox("Associate room_speed and framerate limiter", &fg_limiter)) {
+      }
+      if (ImGui::IsItemHovered() && fg_limiter)
+      {
+          static bool unity =
+              rb.windows.unity;
+
+          ImGui::BeginTooltip();
+          ImGui::Text(
+              "A semi-measure to prevent the game from slowing down if it actively uses room_speed."
+              " Not yet adapted to screen_redraw() or screen_refresh()");
+          ImGui::EndTooltip();
+      }
 
       if (! has_own_limiter_ex)
       {
@@ -5830,16 +5847,6 @@ static constexpr uint32_t UPLAY_OVERLAY_PS_CRC32C  { 0x35ae281c };
 
         if (limit)
         {
-          if (ImGui::BeginItemTooltip ())
-          {
-            ImGui::TextUnformatted (
-              "Graph color represents frame time variance, not proximity"
-              " to your target FPS."
-            );
-
-            ImGui::EndTooltip ();
-          }
-
           if (advanced)
           {
             if (ImGui::Checkbox ("Background", &bg_limit))

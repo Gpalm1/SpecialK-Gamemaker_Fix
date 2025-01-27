@@ -107,4 +107,5 @@ struct show_eula_s {
   bool never_show_again;
 } extern eula;
 
+extern bool fg_limiter = false;
 #endif /* __SK__CONTROL_PANEL_H__ */
