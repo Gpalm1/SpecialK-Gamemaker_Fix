@@ -112,6 +112,7 @@ static DWORD last_di8        = 0;
 static DWORD last_steam      = 0;
 static DWORD last_messagebus = 0;
 static DWORD last_rawinput   = 0;
+static DWORD last_gameinput  = 0;
 static DWORD last_winhook    = 0;
 static DWORD last_winmm      = 0;
 static DWORD last_win32      = 0;
@@ -125,6 +126,7 @@ static DWORD hide_di8        = 0;
 static DWORD hide_steam      = 0;
 static DWORD hide_messagebus = 0;
 static DWORD hide_rawinput   = 0;
+static DWORD hide_gameinput  = 0;
 static DWORD hide_winhook    = 0;
 static DWORD hide_winmm      = 0;
 static DWORD hide_win32      = 0;
@@ -206,6 +208,7 @@ SK::ControlPanel::Input::Draw (void)
     struct { ULONG kbd_reads, mouse_reads, gamepad_reads; } di8        { };
     struct { ULONG kbd_reads, mouse_reads, gamepad_reads; } hid        { };
     struct { ULONG kbd_reads, mouse_reads, gamepad_reads; } raw_input  { };
+    struct { ULONG kbd_reads, mouse_reads, gamepad_reads; } game_input { };
 
     struct { ULONG cursorpos,      keystate,
                keyboardstate, asynckeystate;              } win32      { };
@@ -222,6 +225,7 @@ SK::ControlPanel::Input::Draw (void)
     static auto& di8_reads     = SK_DI8_Backend->reads;
     static auto& hid_reads     = SK_HID_Backend->reads;
     static auto& raw_reads     = SK_RawInput_Backend->reads;
+    static auto& ginput_reads  = SK_GameInput_Backend->reads;
     static auto& win32_reads   = SK_Win32_Backend->reads;
 
     xinput.reads [0]        = xinput_reads  [0];
@@ -266,6 +270,10 @@ SK::ControlPanel::Input::Draw (void)
     raw_input.mouse_reads   = raw_reads     [0];
     raw_input.gamepad_reads = raw_reads     [2];
 
+    game_input.kbd_reads    = ginput_reads  [1];
+    game_input.mouse_reads  = ginput_reads  [0];
+    game_input.gamepad_reads= ginput_reads  [2];
+
     win32.asynckeystate     = win32_reads   [3];
     win32.keyboardstate     = win32_reads   [2];
     win32.keystate          = win32_reads   [1];
@@ -296,6 +304,7 @@ SK::ControlPanel::Input::Draw (void)
     UPDATE_BACKEND_TIMES (DI7,               di7, nextFrame);
     UPDATE_BACKEND_TIMES (DI8,               di8, nextFrame);
     UPDATE_BACKEND_TIMES (RawInput,     rawinput, nextFrame);
+    UPDATE_BACKEND_TIMES (GameInput,   gameinput, nextFrame);
     UPDATE_BACKEND_TIMES (WinHook,       winhook, nextFrame);
     UPDATE_BACKEND_TIMES (Win32,           win32, nextFrameWin32);
     UPDATE_BACKEND_TIMES (WinMM,           winmm, nextFrame);
@@ -533,6 +542,33 @@ SK::ControlPanel::Input::Draw (void)
         if (di8.gamepad_reads > 0) {
           ImGui::Text      ("Gamepad   %lu", di8.gamepad_reads);
         };
+
+        ImGui::EndTooltip  ();
+      }
+    }
+
+    if ( last_gameinput > current_time - 500UL ||
+         hide_gameinput > current_time - 500UL )
+    {
+      SETUP_LABEL_COLOR (gameinput, 500.0f);
+
+      ImGui::SameLine      ();
+      ImGui::Text          (SK_GameInput_EmulatedPlayStation ?
+                  "         GameInput  " ICON_FA_PLAYSTATION :
+                  "         GameInput");
+      ImGui::PopStyleColor ();
+
+      if (ImGui::BeginItemTooltip ())
+      {
+        if (game_input.kbd_reads > 0) {
+          ImGui::Text      ("Keyboard   %lu", game_input.kbd_reads);
+        }
+        if (game_input.mouse_reads > 0) {
+          ImGui::Text      ("Mouse      %lu", game_input.mouse_reads);
+        }
+        if (game_input.gamepad_reads > 0) {
+          ImGui::Text      ("Gamepad    %lu", game_input.gamepad_reads);
+        }
 
         ImGui::EndTooltip  ();
       }
@@ -1981,7 +2017,10 @@ SK::ControlPanel::Input::Draw (void)
           }
 #endif
 
-          if ((pNewestInput != nullptr && pNewestInput->_vibration.trigger.used))
+          static bool has_gameinput =
+            GetModuleHandleW (L"GameInput.dll") != nullptr;
+
+          if ((has_gameinput && SK_GameInput_Backend->reads [2] > 0) || (pNewestInput != nullptr && pNewestInput->_vibration.trigger.used))
           {
             ImGui::TreePush    (""); bool changed =
             ImGui::SliderFloat ("Left Trigger", &config.input.gamepad.impulse_strength_l, 0.0f, 1.5f, "%3.1fx Impulse Strength");

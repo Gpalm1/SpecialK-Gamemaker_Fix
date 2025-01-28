@@ -3231,6 +3231,12 @@
     <ClInclude Include="depends\include\ReShade\reshade_api_display.hpp">
       <Filter>Header Files\External Libraries\ReShade</Filter>
     </ClInclude>
+    <ClInclude Include="include\SpecialK\input\game_input.h">
+      <Filter>Header Files\Backends\Input\GameInput</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SpecialK\input\GameInput.h">
+      <Filter>Header Files\Backends\Input\GameInput</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core.cpp">
@@ -3841,6 +3847,9 @@
     </ClCompile>
     <ClCompile Include="src\input\bluetooth.cpp">
       <Filter>Source Files\Backends\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\game_input.cpp">
+      <Filter>Source Files\Backends\Input\GameInput</Filter>
     </ClCompile>
     <ClCompile Include="src\plugins\tales_of_graces_f.cpp">
       <Filter>Source Files\Plugins</Filter>
@@ -4738,8 +4747,6 @@
       <Filter>Libraries\64-bit\Tobii</Filter>
     </None>
     <None Include=".editorconfig" />
-    <None Include="packages.config" />
-    <None Include="..\..\..\..\..\Windows\System32\GameInput.dll" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource\Resource.rc">

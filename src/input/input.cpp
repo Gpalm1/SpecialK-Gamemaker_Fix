@@ -664,6 +664,9 @@ void SK_Input_PreInit (void)
   if (config.input.gamepad.hook_windows_gaming)
     SK_Input_HookWGI ();
 
+  if (config.input.gamepad.hook_game_input)
+    SK_Input_HookGameInput ();
+
   if (config.input.gamepad.hook_xinput)
     SK_XInput_InitHotPlugHooks ( );
 
