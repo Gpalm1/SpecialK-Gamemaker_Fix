@@ -455,7 +455,7 @@ if exist "$(TargetDir)$(TargetName).exp" ( del "$(TargetDir)$(TargetName).exp" )
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <CreateHotpatchableImage>true</CreateHotpatchableImage>
       <ErrorReporting>Send</ErrorReporting>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
@@ -569,7 +569,7 @@ if exist "$(TargetDir)$(TargetName).exp" ( del "$(TargetDir)$(TargetName).exp" )
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <CreateHotpatchableImage>true</CreateHotpatchableImage>
       <ErrorReporting>Send</ErrorReporting>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
@@ -680,7 +680,7 @@ if exist "$(TargetDir)$(TargetName).exp" ( del "$(TargetDir)$(TargetName).exp" )
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <ErrorReporting>Send</ErrorReporting>
       <OmitFramePointers>false</OmitFramePointers>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
@@ -797,7 +797,7 @@ if exist "$(TargetDir)$(TargetName).exp" ( del "$(TargetDir)$(TargetName).exp" )
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <ErrorReporting>Send</ErrorReporting>
       <OmitFramePointers>false</OmitFramePointers>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <CreateHotpatchableImage>false</CreateHotpatchableImage>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>

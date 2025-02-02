@@ -22,7 +22,7 @@
 #ifndef __SK__GAME_INPUT_H__
 #define __SK__GAME_INPUT_H__
 
-#include <GameInput.h>
+#include <SpecialK\input\GameInput.h>
 
 class SK_IWrapGameInput : IGameInput
 {

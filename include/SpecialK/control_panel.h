@@ -108,4 +108,5 @@ struct show_eula_s {
 } extern eula;
 
 extern bool fg_limiter = false;
+extern float __fg_limit_offset = 0.0;
 #endif /* __SK__CONTROL_PANEL_H__ */

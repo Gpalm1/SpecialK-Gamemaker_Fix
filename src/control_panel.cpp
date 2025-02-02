@@ -5581,6 +5581,9 @@ static constexpr uint32_t UPLAY_OVERLAY_PS_CRC32C  { 0x35ae281c };
               " Not yet adapted to screen_redraw() or screen_refresh()");
           ImGui::EndTooltip();
       }
+      ImGui::SameLine();
+      ImGui::SetNextItemWidth(75.0f);
+      ImGui::DragFloat("Framelimiter offset", &__fg_limit_offset, 1.0f, 0.0f, 100.0f, "%.1f");
 
       if (! has_own_limiter_ex)
       {

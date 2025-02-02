@@ -5,6 +5,7 @@
 #define SK_DATE  27
 #define SK_REV_N 2
 #define SK_REV   2
+#define SK_MOD 2
 
 #ifndef _A2
 #define _A2(a)     #a
@@ -14,7 +15,7 @@
 #endif
 
 #if (defined (SK_REV) && SK_REV_N > 0)
-#define SK_VERSION_STR_A    _A(SK_YEAR) "." _A(SK_MONTH) "." _A(SK_DATE) "." _A(SK_REV)
+#define SK_VERSION_STR_A    _A(SK_YEAR) "." _A(SK_MONTH) "." _A(SK_DATE) "." _A(SK_REV) " mod ver: " _A(SK_MOD)
 #else
 #define SK_VERSION_STR_A    _A(SK_YEAR) "." _A(SK_MONTH) "." _A(SK_DATE)
 #endif

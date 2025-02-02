@@ -1574,43 +1574,93 @@ SK::Framerate::Limiter::wait (void)
   auto _time =
     SK_QueryPerf ().QuadPart;
 
-  //Brainfuck moment
-  int __result, __gmVer;
-  static bool __checked = false;
+
+
   if (fg_limiter) {
-      HWND __GameWindow = SK_GetGameWindow();
-      DWORD procID;
-      GetWindowThreadProcessId(__GameWindow, &procID);
-      HANDLE __GameHandle = OpenProcess(PROCESS_ALL_ACCESS, false, procID);
-      uint8_t* base_addr = (uint8_t*)SK_GetModuleHandle(nullptr);
+    int __checked = 0; // Pass engine version
+    DWORD fg_gm8 = 0x6c73c4; DWORD fg_gm8_p1 = 0x8; DWORD fg_gm8_r;
+    DWORD fg_gm81 = 0x8452f8; DWORD fg_gm81_p1 = 0x8; DWORD fg_gm81_r;
+    DWORD fg_gms149 = 0x656220; DWORD fg_gms149_p1 = 0x4; DWORD fg_gms149_p2 = 0xC; DWORD fg_gms149_result;
+    DWORD fg_result;
+    HWND fg_Window = SK_GetGameWindow();
+    DWORD procID;
+    GetWindowThreadProcessId(fg_Window, &procID);
+    HANDLE fg_GameHandle = OpenProcess(PROCESS_VM_READ, false, procID);
+    DWORD fg_BaseAddress = (DWORD)GetModuleHandle(NULL);
 
-      MEMORY_BASIC_INFORMATION mem_info;
-      VirtualQuery(base_addr, &mem_info, sizeof mem_info);
-      base_addr = (uint8_t*)mem_info.BaseAddress;
+    if (fg_BaseAddress != NULL)
+    {
 
-      if (base_addr != NULL) {
+      if (__checked == 0) {
 
-          if (__checked == false) {
-              ReadProcessMemory(__GameHandle, (LPVOID*)0x6c73c4, &__gmVer, sizeof(__gmVer), 0);
-              ReadProcessMemory(__GameHandle, (LPVOID*)__gmVer + 0x2, &__gmVer, sizeof(__gmVer), 0);
-              if (__gmVer == 50 || __gmVer == 60 || __gmVer == 30) { __gmVer = 80; __checked == true; }
-          }
-          //ReadProcessMemory(__GameHandle, (LPCVOID*)0x8452f8 + 0x8, &__result, sizeof(__result), 0);
-          if (__gmVer == 80) {
-              ReadProcessMemory(__GameHandle, (LPVOID*)0x6c73c4, &__result, sizeof(__result), 0);
-              ReadProcessMemory(__GameHandle, (LPVOID*)__result + 0x2, &__result, sizeof(__result), 0);
-          }
-          else {
-              ReadProcessMemory(__GameHandle, (LPVOID*)0x8452f8, &__result, sizeof(__result), 0);
-              ReadProcessMemory(__GameHandle, (LPVOID*)__result + 0x2, &__result, sizeof(__result), 0);
-          }
-          //if (__result > 240 && __result < 10) {
-          //   ReadProcessMemory(__GameHandle, (LPVOID*)0x8452f8, &__result, sizeof(__result), 0);
-          //   ReadProcessMemory(__GameHandle, (LPVOID*)__result + 0x8, &__result, sizeof(__result), 0);
-          //}
-          __target_fps = (float)__result;
+        // Gamemaker 8.0
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm8), &fg_gm8_r, sizeof(fg_gm8_r), 0);
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm8_r + fg_gm8_p1), &fg_gm8_r, sizeof(fg_gm8_r), 0);
+        if ((float)fg_gm8_r >= 10 && (float)fg_gm8_r <= 240) { __checked = 1; }
+
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm81), &fg_gm81_r, sizeof(fg_gm81_r), 0);
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm81_r + fg_gm81_p1), &fg_gm81_r, sizeof(fg_gm81_r), 0);
+        if ((float)fg_gm81_r >= 10 && (float)fg_gm81_r <= 240) { __checked = 2; }
+
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_BaseAddress + fg_gms149), &fg_gms149_result, sizeof(fg_gms149_result), 0);
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gms149_result + fg_gms149_p1), &fg_gms149_result, sizeof(fg_gms149_result), 0);
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gms149_result + fg_gms149_p2), &fg_gms149_result, sizeof(fg_gms149_result), 0);
+        if ((float)fg_gms149_result >= 10 && (float)fg_gms149_result <= 240) { __checked = 3; }
+
       }
+      if (__checked == 1) {
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm8), &fg_gm8_r, sizeof(fg_gm8_r), 0);
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm8_r + fg_gm8_p1), &fg_gm8_r, sizeof(fg_gm8_r), 0);
+        __target_fps = (float)fg_gm8_r+__fg_limit_offset;
+      }
+      if (__checked == 2) {
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm81), &fg_gm81_r, sizeof(fg_gm81_r), 0);
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm81_r + fg_gm81_p1), &fg_gm81_r, sizeof(fg_gm81_r), 0);
+        __target_fps = (float)fg_gm81_r+__fg_limit_offset;
+      }
+      if (__checked == 3) {
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_BaseAddress + fg_gms149), &fg_gms149_result, sizeof(fg_gms149_result), 0);
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gms149_result + fg_gms149_p1), &fg_gms149_result, sizeof(fg_gms149_result), 0);
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gms149_result + fg_gms149_p2), &fg_gms149_result, sizeof(fg_gms149_result), 0);
+        __target_fps = (float)fg_gms149_result+__fg_limit_offset;
+      }
+    }
   }
+/*
+    if (base_addr != NULL) {
+
+      if (__checked == false) {
+        ReadProcessMemory(__GameHandle, (LPVOID)0x6c73c4, &__gmVer, sizeof(__gmVer), 0);
+        ReadProcessMemory(__GameHandle, reinterpret_cast<LPCVOID>(__gmVer + 0x8), &__gmVer, sizeof(__gmVer), 0);
+
+        ReadProcessMemory(__GameHandle, reinterpret_cast<LPCVOID>(base_addr+0x656220), &__gmStd, sizeof(__gmStd), 0);
+        ReadProcessMemory(__GameHandle, reinterpret_cast<LPCVOID>(__gmStd + 0x4), &__gmStd, sizeof(__gmStd), 0);
+        ReadProcessMemory(__GameHandle, reinterpret_cast<LPCVOID>(__gmStd + 0xC), &__gmStd, sizeof(__gmStd), 0);
+        if (__gmVer == 50 || __gmVer == 60 || __gmVer == 30) { __gmVer = 80; __checked = true; }
+        if (__gmStd == 50 || __gmStd == 60 || __gmStd == 30) {__gmStd = 80; __checked = true;}
+      }
+      //ReadProcessMemory(__GameHandle, (LPCVOID*)0x8452f8 + 0x8, &__result, sizeof(__result), 0);
+      if (__gmVer == 80) {
+        ReadProcessMemory(__GameHandle, (LPVOID)0x6c73c4, &__result, sizeof(__result), 0);
+        ReadProcessMemory(__GameHandle, reinterpret_cast<LPCVOID>(__result + 0x8), &__result, sizeof(__result), 0);
+      }
+      else {
+        ReadProcessMemory(__GameHandle, (LPVOID)0x8452f8, &__result, sizeof(__result), 0);
+        ReadProcessMemory(__GameHandle, reinterpret_cast<LPCVOID>(__result + 0x8), &__result, sizeof(__result), 0);
+      }
+
+        DWORD addr1, addr2;
+        ReadProcessMemory(__GameHandle, reinterpret_cast<LPCVOID>(base_addr+0x656220), &addr1, sizeof(addr1), 0);
+        ReadProcessMemory(__GameHandle, reinterpret_cast<LPCVOID>(addr1 + 0x4), &addr2, sizeof(addr2), 0);
+        ReadProcessMemory(__GameHandle, reinterpret_cast<LPCVOID>(addr2 + 0xC), &__result, sizeof(__result), 0);
+      //if (__result > 240 && __result < 10) {
+      //   ReadProcessMemory(__GameHandle, (LPVOID*)0x8452f8, &__result, sizeof(__result), 0);
+      //   ReadProcessMemory(__GameHandle, (LPVOID*)__result + 0x8, &__result, sizeof(__result), 0);
+      //}
+      __target_fps = (float)__result;
+    }
+  }
+  */
 
 
 
