@@ -1,4 +1,59 @@
-﻿25.1.27.2
+﻿25.1.30.2
+=========
+ + Enable modified form of scissor rectangle hack for 16:9 users running at
+     resolution scales != 100% in Tales of Graces f to prevent shadows from
+       disappearing.
+
+25.1.30.1
+=========
+ + Restored the proper behavior for the command console command:
+    D3D11.ShaderMods.ToggleConfig <shader_config.ini>
+
+25.1.30
+=======
+ + Fixed DisableIfTexture=... condition in d3d11_shaders.ini not actually
+     enabling texture binding state for vertex, pixel, and geometry shaders.
+
+25.1.29.3
+=========
+ + Increase allocation size for DEV_BROADCAST_DEVICEINTERFACE_W global
+     structs to accomodate storing a device path MAX_PATH-many characters.
+
+25.1.29.2
+=========
+ + Changed Widescreen Visibility Hack and "Smog" (now renamed to "Blur")
+     settings in Tales of Graces f from unsaved debug test options to
+       actual settings stored in SK's INI for the game.
+ + Added tooltips explaining what the abovementioned things even are :)
+ + Disable notification about fixing achievement bugs in Tales of Graces f
+     after the first one has been unlocked.
+
+25.1.29.1
+=========
+ + Fixed a SERIOUS screwup in the Tales of Graces f Steam port, where ALL
+     achievement-related code is contingent upon the end-user having the
+       Steam overlay enabled!
+
+    * Bad Bandai Namco, Bad!  Pay me to do your QA next time? :)
+
+25.1.29
+=======
+ + Detach Mono threads after invoking C# functions on threads that are not
+     originally part of the Mono runtime to avoid garbage collection on the
+       render thread in Tales of Graces f.
+ + Increased color grading LUT size to reduce banding in Tales of Graces f.
+
+25.1.28
+=======
+ + Finished porting all of Lyall's Tales of Graces f fix BepInEx mod to C++,
+     including aspect ratio centering and new code to address object culling.
+
+25.1.27.3
+=========
+ + Remove Temporal AA option when MSAA is selected in Tales of Graces f.
+ + Improve overall UI layout and spacing in Tales of Graces f control panel.
+
+25.1.27.2
 =========
  + Boosted default gamepad polling rate up to 1 kHz again after disabling WGI
      in favor of XInput for Tales of Graces f.
