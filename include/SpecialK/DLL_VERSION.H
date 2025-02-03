@@ -5,7 +5,7 @@
 #define SK_DATE  30
 #define SK_REV_N 2
 #define SK_REV   2
-#define SK_MOD 2
+#define SK_MOD 3
 
 #ifndef _A2
 #define _A2(a)     #a

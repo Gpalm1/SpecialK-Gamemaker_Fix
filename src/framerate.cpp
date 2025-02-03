@@ -1581,6 +1581,7 @@ SK::Framerate::Limiter::wait (void)
     DWORD fg_gm8 = 0x6c73c4; DWORD fg_gm8_p1 = 0x8; DWORD fg_gm8_r;
     DWORD fg_gm81 = 0x8452f8; DWORD fg_gm81_p1 = 0x8; DWORD fg_gm81_r;
     DWORD fg_gms149 = 0x656220; DWORD fg_gms149_p1 = 0x4; DWORD fg_gms149_p2 = 0xC; DWORD fg_gms149_result;
+    DWORD fg_gms148 = 0x3CAA60; DWORD fg_gms148_result;
     DWORD fg_result;
     HWND fg_Window = SK_GetGameWindow();
     DWORD procID;
@@ -1597,16 +1598,18 @@ SK::Framerate::Limiter::wait (void)
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm8), &fg_gm8_r, sizeof(fg_gm8_r), 0);
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm8_r + fg_gm8_p1), &fg_gm8_r, sizeof(fg_gm8_r), 0);
         if ((float)fg_gm8_r >= 10 && (float)fg_gm8_r <= 240) { __checked = 1; }
-
+        // Gamemaker 8.1
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm81), &fg_gm81_r, sizeof(fg_gm81_r), 0);
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm81_r + fg_gm81_p1), &fg_gm81_r, sizeof(fg_gm81_r), 0);
         if ((float)fg_gm81_r >= 10 && (float)fg_gm81_r <= 240) { __checked = 2; }
-
+        // Gamemaker Studio 1.4.9999
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_BaseAddress + fg_gms149), &fg_gms149_result, sizeof(fg_gms149_result), 0);
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gms149_result + fg_gms149_p1), &fg_gms149_result, sizeof(fg_gms149_result), 0);
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gms149_result + fg_gms149_p2), &fg_gms149_result, sizeof(fg_gms149_result), 0);
         if ((float)fg_gms149_result >= 10 && (float)fg_gms149_result <= 240) { __checked = 3; }
-
+        // Gamemaker Studio 1.4.1804 //1488
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_BaseAddress + fg_gms148), &fg_gms148_result, sizeof(fg_gms148_result), 0);
+        if ((float)fg_gms148_result >= 10 && (float)fg_gms148_result <= 240) { __checked = 4; }
       }
       if (__checked == 1) {
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gm8), &fg_gm8_r, sizeof(fg_gm8_r), 0);
@@ -1623,6 +1626,10 @@ SK::Framerate::Limiter::wait (void)
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gms149_result + fg_gms149_p1), &fg_gms149_result, sizeof(fg_gms149_result), 0);
         ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_gms149_result + fg_gms149_p2), &fg_gms149_result, sizeof(fg_gms149_result), 0);
         __target_fps = (float)fg_gms149_result+__fg_limit_offset;
+      }
+      if (__checked == 4) {
+        ReadProcessMemory(fg_GameHandle, (LPVOID)(fg_BaseAddress + fg_gms148), &fg_gms148_result, sizeof(fg_gms148_result), 0);
+        __target_fps = (float)fg_gms148_result+__fg_limit_offset;
       }
     }
   }
